@@ -7,11 +7,25 @@ def findValuesBigIndent(lines):
 
 
 def findValuesLittleIndent(lines):
-    print("lines", lines)
+    # print("lines", lines)
+    pass
 
 
 with open('example2.log') as file:
     lines = file.readlines()
+
+    # Remove auto indentation searching by "\n> "
+
+    newLines = []
+    for index, line in enumerate(lines):
+        if("> " in line):
+            concatLine = (newLines[-1] + line).replace("\n> ", "")
+            print("line: ", line)
+            print("concatLine: ", concatLine)
+            newLines[-1] = concatLine
+            newLines[-1] = ' '.join(concatLine.split())
+        else:
+            newLines.append(line)
 
     # Set up our time intervals for our graph output
     timeFrames = [f"Prior {x} to {x + 2} days" for x in range(1, 20, 3)]
@@ -23,7 +37,7 @@ with open('example2.log') as file:
                 # Send over all the lines necessary to parse data
                 findValuesLittleIndent(lines[index: index + 72])
                 break
-            print(line.find(" use_prior1t3days"))
+            # print(line.find(" use_prior1t3days"))
             IOS = ''.join(lines[index + 1: index + 3]
                           ).replace('\n> ', '')
             IOSnums = re.findall(r'[-0-9.]+', IOS)
@@ -34,4 +48,4 @@ with open('example2.log') as file:
 
     with open('yourcsv.csv', 'w+') as csvfile:
         w = csv.writer(csvfile)
-        w.writerow(lines)
+        w.writerow(newLines)
